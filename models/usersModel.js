@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
 
+    bio: {
+      type: String,
+      default: "",
+    },
+
     email: {
       type: String,
       unique: true,
@@ -29,9 +34,9 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
-    bio: {
-      type: String,
-      default: "",
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
 
