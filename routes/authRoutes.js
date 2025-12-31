@@ -15,4 +15,6 @@ router
   .route("/sign-up")
   .post(authValidator.validateSignUp(), validateRequest, authController.signUp);
 
+router.route("/get-otp").post(authController.getOtp);
+
 export default router;
