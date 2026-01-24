@@ -23,4 +23,22 @@ export class AuthValidator {
       body("bio").optional().notEmpty().withMessage("Bio is required"),
     ];
   }
+
+  validateResetPassword() {
+    return [
+      body("email")
+        .trim()
+        .notEmpty()
+        .withMessage("Email is required")
+        .isEmail()
+        .withMessage("Invalid email"),
+
+      body("password")
+        .trim()
+        .notEmpty()
+        .withMessage("New Password is required")
+        .isLength({ min: 6 })
+        .withMessage("Password must be at least 6 characters"),
+    ];
+  }
 }

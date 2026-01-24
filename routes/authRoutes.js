@@ -16,6 +16,13 @@ router
   .post(authValidator.validateSignUp(), validateRequest, authController.signUp);
 
 router.route("/sign-in").post(authController.signIn);
+router
+  .route("/reset-password")
+  .post(
+    authValidator.validateResetPassword(),
+    validateRequest,
+    authController.resetPassword,
+  );
 
 router.route("/get-otp").post(authController.getOtp);
 router.route("/verify-otp").post(authController.verifyOtp);

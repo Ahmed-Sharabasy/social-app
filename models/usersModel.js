@@ -34,13 +34,18 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
+    canResetPassword: {
+      type: Boolean,
+      default: false,
+    },
+
     isVerified: {
       type: Boolean,
       default: false,
     },
   },
 
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 🔒 Hash password before saving
