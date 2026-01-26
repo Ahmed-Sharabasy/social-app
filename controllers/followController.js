@@ -1,8 +1,9 @@
 import Follows from "../models/followersModel.js";
 import appError from "../utils/appError.js";
 
-//? POST/users/toggle-follow (follow or unfollow a given user by its id) // شوف الحوار دا
+//Done toggle-follow (follow or unfollow a given user by its id)
 export const followRequest = async (req, res, next) => {
+  let message;
   const { userIdToFollow, followerId } = req.body;
 
   // ckeck if followerId and userIdToFollow are same IDS
@@ -16,10 +17,15 @@ export const followRequest = async (req, res, next) => {
     following: userIdToFollow,
     // status: { $ne: "blocked" },
   });
-
-  console.log(existingFollow);
   if (existingFollow) {
-    return next(new appError("you are already following this user", 400));
+    existingFollow = await Follows.findByIdAndDelete(existingFollow._id);
+    message = "unfollowed successfully";
+    existingFollow.status = "unfollowed";
+    return res.status(200).json({
+      status: "success",
+      message,
+      data: existingFollow,
+    });
   }
 
   // Create a new follow request
@@ -28,9 +34,11 @@ export const followRequest = async (req, res, next) => {
     following: userIdToFollow,
     // status: "pending",
   });
+  message = "followed successfully";
 
   res.status(200).json({
     status: "success",
+    message,
     data: existingFollow,
   });
 };
