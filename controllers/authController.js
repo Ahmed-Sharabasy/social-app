@@ -1,6 +1,6 @@
 import User from "../models/usersModel.js";
 import { generateAndHashOTP } from "../utils/generateAndHashOTP.js";
-import appError from "../utils/appError.js";
+import appError from "../utils/AppError.js";
 import sendEmail from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -120,6 +120,10 @@ export const signIn = async (req, res, next) => {
   const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || "90d",
   });
+
+  // //it must be a middleware in route to keep know the req information
+  // //save the user data into req to user it any where you need it // like photoUpload
+  // req.user = user;
 
   res.status(200).json({
     token,

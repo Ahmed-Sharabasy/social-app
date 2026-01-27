@@ -1,7 +1,13 @@
-// const express = require("express");
-// const router = express.Router();
-// const authController = require("../controllers/authController.js");
+import express from "express";
 
-// router.route("/sign-up").post(authController.signUp);
+import * as userController from "../controllers/userController.js";
 
-// module.exports = router;
+const router = express.Router();
+
+// Example route for user profile picture upload
+// router.patch("/updateMe", upload.single("photo"), userController.updateMe);
+router
+  .route("/updateMe")
+  .patch(userController.uploadUserAvatar, userController.updateMe);
+
+export default router;
