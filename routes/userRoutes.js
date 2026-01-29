@@ -8,6 +8,10 @@ const router = express.Router();
 // router.patch("/updateMe", upload.single("photo"), userController.updateMe);
 router
   .route("/updateMe")
-  .patch(userController.uploadUserAvatar, userController.updateMe);
+  .patch(
+    userController.uploadUserAvatar,
+    userController.resizeUserPhoto,
+    userController.updateMe,
+  );
 
 export default router;

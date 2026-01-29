@@ -1,20 +1,24 @@
 import multer from "multer";
 import AppError from "../utils/AppError.js";
 import User from "../models/usersModel.js";
+import sharp from "sharp";
 
 // define multer storage
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // cb (error , data(path))  // null ? no error : error
-    cb(null, "public/img");
-  },
-  filename: (req, file, cb) => {
-    const photoExtention = file.mimetype.split("/")[1];
-    // name of the photo
-    // cb(null, `user-${req.user._id}-${Date.now()}.${photoExtention}`);
-    cb(null, `user-${514651651615}-${Date.now()}.${photoExtention}`);
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     // cb (error , data(path))  // null ? no error : error
+//     cb(null, "public/img");
+//   },
+//   filename: (req, file, cb) => {
+//     const photoExtention = file.mimetype.split("/")[1];
+//     // name of the photo
+//     // cb(null, `user-${req.user._id}-${Date.now()}.${photoExtention}`);
+//     cb(null, `user-${514651651615}-${Date.now()}.${photoExtention}`);
+//   },
+// });
+
+// save photo into memory to manipulate it before saving to disk
+const multerStorageMemory = multer.memoryStorage();
 
 // define multer filter
 const multerFilter = (req, file, cb) => {
@@ -28,11 +32,25 @@ const multerFilter = (req, file, cb) => {
 
 // const upload = multer({ dest: "public/img" });
 const upload = multer({
-  storage: multerStorage,
+  // storage: multerStorage,
+  storage: multerStorageMemory,
   fileFilter: multerFilter,
 });
 
 export const uploadUserAvatar = upload.single("photo");
+
+export const resizeUserPhoto = (req, res, next) => {
+  // if no file to resize
+  if (!req.file) return next();
+  // we can use sharp to resize the photo here
+  console.log(req.file);
+  sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/user-514651651615-${Date.now()}.jpeg`);
+  next();
+};
 
 // update user profile
 export const updateMe = async (req, res) => {
