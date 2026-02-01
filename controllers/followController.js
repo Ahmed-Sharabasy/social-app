@@ -1,5 +1,5 @@
 import Follows from "../models/followersModel.js";
-import appError from "../utils/appError.js";
+import appError from "../utils/AppError.js";
 
 //Done toggle-follow (follow or unfollow a given user by its id)
 export const followRequest = async (req, res, next) => {

@@ -2,6 +2,7 @@
 import { body } from "express-validator";
 
 export class AuthValidator {
+  // Sign up
   validateSignUp() {
     return [
       body("name").trim().notEmpty().withMessage("Name is required"),
@@ -24,6 +25,7 @@ export class AuthValidator {
     ];
   }
 
+  // Reset Password
   validateResetPassword() {
     return [
       body("email")
@@ -39,6 +41,36 @@ export class AuthValidator {
         .withMessage("New Password is required")
         .isLength({ min: 6 })
         .withMessage("Password must be at least 6 characters"),
+    ];
+  }
+
+  // POST
+  validatePostCreation() {
+    return [
+      body("content")
+        .trim()
+        .notEmpty()
+        .withMessage("Post content is required")
+        .isLength({ max: 5000 })
+        .withMessage("Post content cannot exceed 5000 characters"),
+      body("image").optional(),
+    ];
+  }
+  // validate toggleLike
+  validateToggleLike() {
+    return [
+      body("postId")
+        .trim()
+        .notEmpty()
+        .withMessage("Post ID is required")
+        .isMongoId()
+        .withMessage("Invalid Post ID"),
+      body("userId")
+        .trim()
+        .notEmpty()
+        .withMessage("User ID is required")
+        .isMongoId()
+        .withMessage("Invalid User ID"),
     ];
   }
 }
