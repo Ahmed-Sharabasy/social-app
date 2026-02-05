@@ -73,4 +73,41 @@ export class AuthValidator {
         .withMessage("Invalid User ID"),
     ];
   }
+  // validate get all comments for a post
+  validateGetComments() {
+    return [
+      body("postId")
+        .trim()
+        .notEmpty()
+        .withMessage("Post ID is required")
+        .isMongoId()
+        .withMessage("Invalid Post ID"),
+    ];
+  }
+
+  // validate create comment on postId, userId, content
+  validateCommentCreationOnPost() {
+    return [
+      body("postId")
+        .trim()
+        .notEmpty()
+        .withMessage("Post ID is required")
+        .isMongoId()
+        .withMessage("Invalid Post ID"),
+
+      body("userId")
+        .trim()
+        .notEmpty()
+        .withMessage("User ID is required")
+        .isMongoId()
+        .withMessage("Invalid User ID"),
+
+      body("content")
+        .trim()
+        .notEmpty()
+        .withMessage("Comment content is required")
+        .isLength({ max: 1000 })
+        .withMessage("Comment content cannot exceed 1000 characters"),
+    ];
+  }
 }

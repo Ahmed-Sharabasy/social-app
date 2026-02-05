@@ -1,4 +1,5 @@
 import { matchedData, validationResult } from "express-validator";
+import AppError from "../utils/AppError.js";
 
 export const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
@@ -8,7 +9,7 @@ export const validateRequest = (req, res, next) => {
   // send only the first error message
   if (!errors.isEmpty()) {
     const firstError = errors.array()[0];
-    return res.status(400).send(apiError(400, firstError.msg));
+    return next(new AppError(firstError.msg, 400));
   }
 
   // if no errors, get the validated data

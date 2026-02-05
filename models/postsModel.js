@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+// * check out what you need to do like (virtual populate comments,
+// * indexes,pre(finished  ) ,etc)
+
 const postSchema = new mongoose.Schema(
   {
     userId: {
@@ -22,12 +25,13 @@ const postSchema = new mongoose.Schema(
         },
       },
     ],
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
+    // this will be virtual populateed
+    // comments: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Comment",
+    //   },
+    // ],
     shares: {
       type: Number,
       default: 0,
@@ -54,6 +58,13 @@ postSchema.virtual("likeCount").get(function () {
 postSchema.virtual("commentCount").get(function () {
   return this.comments.length;
 });
+
+// todo: bulid virtual populate for comments
+// postSchema.virtual("comments", {
+//   ref: "Comment",
+//   foreignField: "postId",
+//   localField: "_id",
+// });
 
 // Ensure virtuals are included in JSON
 postSchema.set("toJSON", { virtuals: true });

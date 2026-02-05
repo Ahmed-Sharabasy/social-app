@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
   {
+    // todo: remove all validation from here and handle it in express validator
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -36,7 +37,12 @@ const commentSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    // Ensure virtuals are included in JSON
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  },
 );
 
 // Virtual for like count
@@ -44,12 +50,9 @@ commentSchema.virtual("likeCount").get(function () {
   return this.likes.length;
 });
 
-// Ensure virtuals are included in JSON
-commentSchema.set("toJSON", { virtuals: true });
-
 // Index for better query performance
-commentSchema.index({ postId: 1, createdAt: -1 });
-commentSchema.index({ userId: 1 });
-commentSchema.index({ "likes.userId": 1 });
+// commentSchema.index({ postId: 1, createdAt: -1 });
+// commentSchema.index({ userId: 1 });
+// commentSchema.index({ "likes.userId": 1 });
 
 export default mongoose.model("Comment", commentSchema);
