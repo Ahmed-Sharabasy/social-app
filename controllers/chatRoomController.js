@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/usersModel.js";
 import ChatRoom from "../models/chatRoomsModel.js";
+import mongoose from "mongoose";
 
 // ? todo todo first 14/2/2026
 export const createRoom = async (req, res) => {
@@ -21,19 +22,51 @@ export const createRoom = async (req, res) => {
   }
 
   // check the data sent by the client
-  //promese all users to get those data from the database
-  const { participantId } = req.body;
-  // cheack if the chat room already exists between the two users
-  // const room = await ChatRoom.findOne({
-  //   participants: { $all: [user._id, participantId] },
-  // });
 
-  console.log(room);
+  const { participantId } = req.body;
+
+  // cheack if the chat room already exists between the two users
+
+  // console.log(otherUserId);
+  console.log(user._id);
+
+  const room = await ChatRoom.findOne({
+    participants: { $all: [user._id, participantId] },
+  });
+  if (room) {
+    return res
+      .status(200)
+      .json({ ChatRoom: room, message: "Chat room already exists" });
+  }
+
   // if not, create a new chat room and save it to the database
 
-  // return the chat room data to the client
+  const newChatRoom = await ChatRoom.create({
+    participants: [user._id, req.body.participantId],
+  });
 
-  res.status(200).json({ message: "Chat room created successfully" });
+  res
+    .status(200)
+    .json({ ChatRoom: newChatRoom, message: "Chat room created successfully" });
+};
+
+export const getUserChatRooms = async (req, res) => {
+  if (
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith("Bearer")
+  ) {
+    return res.status(401).json({ message: "Unauthorized please login first" });
+  }
+  const decoded = jwt.verify(
+    req.headers.authorization.split(" ")[1],
+    process.env.JWT_SECRET,
+  );
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return res.status(401).json({ message: "cant find user you sign up" });
+  }
+  const chatRooms = await ChatRoom.find({ participants: user._id });
+  res.status(200).json({ chatRooms });
 };
 
 // todo later!: create chat room between two or more users, and save it to the database

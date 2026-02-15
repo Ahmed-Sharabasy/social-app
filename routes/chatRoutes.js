@@ -3,7 +3,7 @@
 import express from "express";
 import {
   createRoom,
-  // getUserRooms,
+  getUserChatRooms,
   // getRoomMessages,
 } from "../controllers/chatRoomController.js";
 
@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 router.route("/chat-rooms/new").post(createRoom);
-// router.get("/chat-rooms", protect, getUserRooms);
+router.get("/chat-rooms", getUserChatRooms);
 // router.get("/chat-messages/:roomId", protect, getRoomMessages);
 
 export default router;
