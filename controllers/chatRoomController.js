@@ -4,6 +4,22 @@ import ChatRoom from "../models/chatRoomsModel.js";
 import mongoose from "mongoose";
 
 // ? todo todo first 14/2/2026
+// for index.js socket
+export const findOrCreateChatRoom = async (userId1, userId2) => {
+  let room;
+  room = await ChatRoom.findOne({
+    participants: { $all: [userId1, userId2] },
+  });
+  if (room) return room;
+
+  // if not, create a new chat room and save it to the database
+
+  room = await ChatRoom.create({
+    participants: [userId1, userId2],
+  });
+
+  return room;
+};
 export const createRoom = async (req, res) => {
   // console.log ( jwt token)
   if (
@@ -67,6 +83,16 @@ export const getUserChatRooms = async (req, res) => {
   }
   const chatRooms = await ChatRoom.find({ participants: user._id });
   res.status(200).json({ chatRooms });
+};
+
+export const getRoomMessages = async (req, res) => {
+  const messages = await ChatMessage.find({
+    chatRoom: req.params.roomId,
+  }).populate({
+    path: "sender",
+    select: "username email avatar",
+  });
+  res.status(200).json({ messages });
 };
 
 // todo later!: create chat room between two or more users, and save it to the database

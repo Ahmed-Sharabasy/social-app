@@ -12,7 +12,15 @@ const chatRoomSchema = new mongoose.Schema(
         required: [true, "Chat room must have participants"],
       },
     ],
-
+    lastMessage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ChatMessage",
+      default: null,
+    },
+    lastMessageAt: {
+      type: Date,
+      default: null,
+    },
     status: {
       type: String,
       enum: ["active", "archived", "deleted"],
